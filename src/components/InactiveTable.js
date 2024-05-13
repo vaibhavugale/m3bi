@@ -8,25 +8,8 @@ const TABLE_HEAD = [
   { columName: "Claim Ownership" },
 ];
 
-const TABLE_ROWS = [
-  {
-    userID: "653424332",
-    storage: "5.5",
-    delete: "",
-  },
-  {
-    userID: "653424334",
-    storage: "5.5",
-    delete: "",
-  },
-  {
-    userID: "653424339",
-    storage: "5.5",
-    delete: "",
-  },
-];
 
-const InactiveDatable = () => {
+const InactiveDatable = ({TABLE_ROWS}) => {
   const [active, setActive] = useState(false);
   const [selectedID, setSelectedId] = useState([]);
   const [modalData, setModalData] = useState({});
@@ -34,6 +17,7 @@ const InactiveDatable = () => {
   const [claimIds,setClaimIds] = useState([]);
 
   const handleDelete = (id) => {
+    console.log(id);
    
     alert("Selected data owned by this inactive user is marked for deletion");
     setSelectedId( (prv)=>[...prv,id]);
@@ -60,6 +44,7 @@ const InactiveDatable = () => {
   };
 
   const handleClaim =(id)=>{
+    console.log(id)
     alert("Successfully initiated ownership transfer");
      setClaimIds((prv) => [...prv,id]);
      const filterDete = selectedID.filter((d_id)=> d_id!=id);
@@ -72,25 +57,26 @@ const InactiveDatable = () => {
       <table className=" w-full  table-auto mt-2 rounded-lg bg-blue-950 py-3 overflow-hidden">
         <thead className=" rounded-md text-white py-2">
           <tr className="   rounded-lg ">
-            {TABLE_HEAD?.map((item) => {
-              return <td className="px-3">{item?.columName}</td>;
+            {TABLE_HEAD?.map((item,index) => {
+              return <td key={index} className="px-3">{item?.columName}</td>;
             })}
           </tr>
         </thead>
 
         <tbody className=" p-2">
-          {TABLE_ROWS?.map((rowData) => {
+          {TABLE_ROWS?.map((rowData,index) => {
             return (
               <tr
+               key={index}
                 className={`rounded-full px-5 border-b  ${
-                  checkDeleteId(rowData?.userID) ? "bg-red-500" : ` ${
-                  checkClaimId(rowData?.userID) ? "bg-[#E6BE3A]" : "bg-white"
+                  checkDeleteId(rowData?.UID) ? "bg-red-500" : ` ${
+                  checkClaimId(rowData?.UID) ? "bg-[#E6BE3A]" : "bg-white"
                 }`
                 } 
                 
                 `}
               >
-                <td className=" p-3">{rowData?.userID}</td>
+                <td className=" p-3">{rowData?.UID}</td>
                 <td className=" p-3">{rowData?.storage}</td>
                 <td className=" p-3">
                   <button
@@ -135,7 +121,7 @@ const InactiveDatable = () => {
             </thead>
             <tbody>
               <tr className=" bg-white text-black border">
-                <td>{modalData?.userID}</td>
+                <td>{modalData?.UID}</td>
                 <td>{modalData?.storage}</td>
               </tr>
             </tbody>
@@ -166,7 +152,7 @@ const InactiveDatable = () => {
           <p className="  ">Total no.of files: 223943243</p>
 
           <button
-            onClick={() => handleDelete(modalData?.userID)}
+            onClick={() => handleDelete(modalData?.UID)}
             className="  bg-red-600 w-[100px] text-white px-2 py-2 border-none outline-none rounded-md"
           >
             Delete
@@ -207,7 +193,7 @@ const InactiveDatable = () => {
           <div>
             <label>User Name or ADS ID:</label>
             <input type="text" className=" border mx-2" />
-            <button onClick={()=> handleClaim(modalData?.userID)} className=" bg-[#005B9C] text-white px-4  rounded-md py-3">
+            <button onClick={()=> handleClaim(modalData?.UID)} className=" bg-[#005B9C] text-white px-4  rounded-md py-3">
               Claimit
             </button>
           </div>

@@ -3,6 +3,7 @@ import InactiveDatable from "./InactiveTable";
 import { TABLE_HEAD } from "../data";
 import ActiveDatable from "./ActiveDatable";
 import { AiFillEnvironment } from "react-icons/ai";
+import { useEffect } from "react";
 import { volumeData } from "../data";
 import {
   MultiSelect,
@@ -15,6 +16,15 @@ import {
 
 
 const Dashboard = () => {
+  const [userData , setUserData] = useState([]);
+  useEffect(()=>{
+    const getData =async () =>{
+       const res = await fetch("https://m3bi-backend.onrender.com/userData");
+       const data = await res.json();
+       setUserData(data?.data);
+    }
+    getData();
+  },[])
   const [optionData, setOptionData] = useState({
     location: "USA",
     environment: "Sliver",
@@ -142,7 +152,7 @@ const Dashboard = () => {
                 {optionData?.volume &&
                   volumeData[optionData.volume].map((item) => {
                     return (
-                      <tr className={` w-full text-black bg-white  ${item?.Percentage >50 ? "bg-[#F24A3F]":"bg-[#54B358]"} `}>
+                      <tr className={` w-full text-black bg-white  ${item?.Percentage >=50 ? "bg-[#F24A3F]":"bg-[#54B358]"} `}>
                         <td className="p-3">{item?.Name}</td>
                         <td className="p-3">{item?.Path}</td>
                         <td className="p-3">{item?.Quota}</td>
@@ -161,7 +171,7 @@ const Dashboard = () => {
             <p className=" mt-2 font-semibold">
               Storage Occupied by Inactive Users
             </p>
-            <InactiveDatable />
+            <InactiveDatable  TABLE_ROWS={userData}/>
 
             <div className=" w-full bg-[#FF9000] shadow-2xl border mt-5 text-white font-semibold rounded-md px-5 py-3">
               Total Storage Occupied by Inactive Users [TB]: 15.0{" "}
@@ -170,7 +180,7 @@ const Dashboard = () => {
               Storage Occupied by Active Users
             </div>
 
-            <ActiveDatable />
+            <ActiveDatable row={userData} />
           </>
         )}
       </div>
