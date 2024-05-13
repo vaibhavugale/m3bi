@@ -42,15 +42,28 @@ export const TABLE_HEAD = [
     { columName: "Used Percentage %" },
   ];
   
-  export const TABLE_ROWS = [
-    {
-      Name: "volume1",
-      Path: "/org/LOB/volume2",
-      Quota: "35",
-      Used: "32",
-      Percentage: "67",
-    },
-  ];
+  export const volumeData = {
+    "volume1":[
+{
+  Name: "volume1",
+  Path: "/org/LOB/volume1",
+  Quota: 50,
+  Used: 32,
+  Percentage: 47,
+}
+    ],
+    "volume2":[
+      {
+        Name: "volume2",
+        Path: "/org/LOB/volume2",
+        Quota: 55,
+        Used: 50,
+        Percentage: 67,
+      }
+    ]
+  }
+
+ 
 
   export const userTableCol =[
     { columName: "User Name" },

@@ -45,7 +45,6 @@ const ActiveDatable = () => {
 
       <tbody className=" p-2">
         {row?.map((rowData) => {
-            console.log(rowData)
           return (
             <tr className=" rounded-full  border-b bg-white">
               <td className=" p-3">{rowData?.userName}</td>
