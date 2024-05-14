@@ -12,19 +12,18 @@ import {
   SearchSelectItem,
   Select,
   SelectItem,
-} from '@tremor/react';
-
+} from "@tremor/react";
 
 const Dashboard = () => {
-  const [userData , setUserData] = useState([]);
-  useEffect(()=>{
-    const getData =async () =>{
-       const res = await fetch("https://m3bi-backend.onrender.com/userData");
-       const data = await res.json();
-       setUserData(data?.data);
-    }
+  const [userData, setUserData] = useState([]);
+  useEffect(() => {
+    const getData = async () => {
+      const res = await fetch("https://m3bi-backend.onrender.com/userData");
+      const data = await res.json();
+      setUserData(data?.data);
+    };
     getData();
-  },[])
+  }, []);
   const [optionData, setOptionData] = useState({
     location: "USA",
     environment: "Sliver",
@@ -33,10 +32,8 @@ const Dashboard = () => {
     volume: "",
   });
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    console.log(name, value);
+  const handleChange = (name, value) => {
+    if(!value) return;
     setOptionData((prevSelectedValues) => ({
       ...prevSelectedValues,
       [name]: value,
@@ -52,68 +49,57 @@ const Dashboard = () => {
         </p>
 
         <div className="   flex flex-col  md:flex-row justify-between  mb-5">
-          <div className=" flex-grow">
-            <p className="  font-bold ">Location:</p>
-
-            <select
-              onChange={handleChange}
-              name="location"
-              className="border px-4  outline-none rounded-md  py-1  w-[50%] "
+          <div className="flex-grow ">
+            <p className=" font-semibold">Location:</p>
+            <SearchSelect
+              onValueChange={(e) => handleChange("location", e)}
+              className="  outline-none rounded-md py-1 w-[70%] "
             >
-              <option value={"USA"}>USA</option>
-              <option value={"IN"}>IN</option>
-            </select>
+              <SearchSelectItem value="US" selected>US</SearchSelectItem>
+              <SearchSelectItem value="IN">IN</SearchSelectItem>
+  
+            </SearchSelect>
           </div>
 
-          <div className="flex-grow">
-            <p>Environment:</p>
-            <select
-              onChange={handleChange}
-              name="environment"
-              className=" border px-4  outline-none rounded-md py-1 w-[60%] "
+          <div className="flex-grow ">
+            <p className=" font-semibold">Environment:</p>
+            <SearchSelect
+              onValueChange={(e) => handleChange("environment", e)}
+              className="  outline-none rounded-md py-1 w-[70%] "
             >
-              <option value={"Sliver"}>Sliver</option>
-              <option value={"Gold"}>Gold</option>
-              <option value={"Platinum"}>Platinum</option>
-              <option value={"Palladium"}> Palladium</option>
-            </select>
+              <SearchSelectItem value="Sliver">Sliver</SearchSelectItem>
+              <SearchSelectItem value="Gold">Gold</SearchSelectItem>
+              <SearchSelectItem value="Platinum">Platinum</SearchSelectItem>
+              <SearchSelectItem value="Palladium">Palladium</SearchSelectItem>
+            </SearchSelect>
           </div>
-        
-     
-
-
-     
-
-     
-
-        
-
-
-          <div className="flex-grow">
-            <p>MapR Cluster Type:</p>
-            <select
-              onChange={handleChange}
-              name="clusterType"
-              className=" border px-4  outline-none rounded-md py-1 w-[60%]"
+            
+          <div className="flex-grow ">
+            <p className=" font-semibold">MapR Cluster Type::</p>
+            <SearchSelect
+              onValueChange={(e) => handleChange("clusterType", e)}
+              className="  outline-none rounded-md py-1 w-[70%] "
             >
-              <option value={"Batch"}>Batch</option>
-              <option value={"Realtime"}>Real Time</option>
-            </select>
+              <SearchSelectItem value="Batch">Batch</SearchSelectItem>
+              <SearchSelectItem value="RealTime">Real Time</SearchSelectItem>
+            </SearchSelect>
           </div>
 
-          <div className=" flex-grow">
-            <p>MapR Cluster Name:</p>
-            <select
-              onChange={handleChange}
-              name="clusterName"
-              className=" border px-4 outline-none rounded-md py-1 w-[60%] "
+          <div className="flex-grow ">
+            <p className=" font-semibold">MapR Cluster Name:</p>
+            <SearchSelect
+              onValueChange={(e) => handleChange("clusterName", e)}
+              className="  outline-none rounded-md py-1 w-[70%] "
             >
-              <option value={"SliverM5"}>Silver M5</option>
-              <option value={"GoldM5"}>Gold M5</option>
-              <option value={"PlatinumM5"}>Platinum M5</option>
-              <option value={"PalladiumM5"}>Palladium M5</option>
-            </select>
+              <SearchSelectItem value="SilverM5">Silver M5</SearchSelectItem>
+              <SearchSelectItem value="GoldM5">Gold M5</SearchSelectItem>
+              <SearchSelectItem value="PlatinumM5">Platinum M5</SearchSelectItem>
+              <SearchSelectItem value="PalladiumM5">Palladium M5</SearchSelectItem>
+       
+            </SearchSelect>
           </div>
+      
+
         </div>
 
         <div className="  p-8">
@@ -128,15 +114,29 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <select
+        {/* <select
           onChange={handleChange}
           name="volume"
           className=" border w-full px-3 py-1 rounded-md"
         >
-          <option disabled selected>select volume</option>
+          <option disabled selected>
+            select volume
+          </option>
           <option value={"volume1"}>Volume1</option>
           <option value={"volume2"}>Volume2</option>
-        </select>
+        </select> */}
+
+        
+            <SearchSelect
+              onValueChange={(e) => handleChange("volume", e)}
+              className="  w-full px-3 py-1 rounded-md"
+
+            >
+              <SearchSelectItem  disabled selected>Select</SearchSelectItem>
+              <SearchSelectItem value="volume1" >Volume1</SearchSelectItem>
+              <SearchSelectItem value="volume2">volume2</SearchSelectItem>
+  
+            </SearchSelect>
 
         {optionData?.volume != "" && (
           <>
@@ -153,7 +153,13 @@ const Dashboard = () => {
                 {optionData?.volume &&
                   volumeData[optionData.volume].map((item) => {
                     return (
-                      <tr className={` w-full text-black bg-white  ${item?.Percentage >=50 ? "bg-[#F24A3F]":"bg-[#54B358]"} `}>
+                      <tr
+                        className={` w-full text-black bg-white  ${
+                          item?.Percentage >= 50
+                            ? "bg-[#F24A3F]"
+                            : "bg-[#54B358]"
+                        } `}
+                      >
                         <td className="p-3">{item?.Name}</td>
                         <td className="p-3">{item?.Path}</td>
                         <td className="p-3">{item?.Quota}</td>
@@ -172,7 +178,7 @@ const Dashboard = () => {
             <p className=" mt-2 font-semibold">
               Storage Occupied by Inactive Users
             </p>
-            <InactiveDatable  TABLE_ROWS={userData}/>
+            <InactiveDatable TABLE_ROWS={userData} />
 
             <div className=" w-full bg-[#FF9000] shadow-2xl border mt-5 text-white font-semibold rounded-md px-5 py-3">
               Total Storage Occupied by Inactive Users [TB]: 15.0{" "}
