@@ -64,7 +64,7 @@ const InactiveDatable = ({TABLE_ROWS}) => {
         </thead>
 
         <tbody className=" p-2">
-          {TABLE_ROWS?.map((rowData,index) => {
+{ TABLE_ROWS.length !=0 && TABLE_ROWS?.map((rowData,index) => {
             return (
               <tr
                key={index}
@@ -105,6 +105,14 @@ const InactiveDatable = ({TABLE_ROWS}) => {
               </tr>
             );
           })}
+
+          {TABLE_ROWS==0 && <tr className=" rounded-full  w-full border-b bg-white">
+          <td className=' px-3'>loading...</td>
+          <td className=''></td>
+          <td className=''></td>
+          <td className=''></td>
+      
+        </tr>}
         </tbody>
       </table>
 

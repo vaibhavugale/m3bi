@@ -46,7 +46,7 @@ const ActiveDatable = ({row}) => {
       </thead>
 
       <tbody className=" p-2">
-        {row?.map((rowData,index) => {
+        { row.length!=0 &&  row?.map((rowData,index) => {
           return (
             <tr key={index} className=" rounded-full  border-b bg-white">
               <td className=" p-3">{rowData?.userName}</td>
@@ -56,6 +56,14 @@ const ActiveDatable = ({row}) => {
             </tr>
           );
         })}
+
+        {row.length==0 && <tr className=" rounded-full  w-full border-b bg-white">
+          <td className=' px-3'>loading...</td>
+          <td className=''></td>
+          <td className=''></td>
+          <td className=''></td>
+      
+        </tr>}
       </tbody>
     </table>
   )
