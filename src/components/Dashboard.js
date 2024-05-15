@@ -16,18 +16,18 @@ const Dashboard = () => {
       const res = await fetch("http://localhost:5000/userData");
       const data = await res.json();
 
-      console.log( data?.data);
+      // console.log( data?.data);
        await data?.data.map((item)=>{
         if(item?._id=="ACTIVE") setActiveUserData(item?.users);
         if(item?._id=="INACTIVE") setInactiveUserData(item?.users);
       })
 
-      console.log(inactiveUserData);
-      const result = inactiveUserData.reduce(
-        (acc, item) => acc + parseInt(item?.storage),
-        0
-      );
-      setTotalStorageInactive(result);
+      // console.log(inactiveUserData);
+      // const result = inactiveUserData.reduce(
+      //   (acc, item) => acc + parseInt(item?.storage),
+      //   0
+      // );
+      // setTotalStorageInactive(result);
     };
     getData();
   }, []);
@@ -46,6 +46,13 @@ const Dashboard = () => {
       [name]: value,
     }));
   };
+
+  const getTotalStorage = (data) =>{
+    return data.reduce(
+      (acc, item) => acc + parseInt(item?.storage),
+      0
+    );
+  }
 
   return (
     <div className=" w-[100vw] flex  items-center flex-col  px-5 py-3  min-h-[80vh]  ">
@@ -182,7 +189,7 @@ const Dashboard = () => {
             <InactiveDatable TABLE_ROWS={inactiveUserData} />
 
             <div className=" w-full bg-[#FF9000] shadow-2xl border mt-5 text-white font-semibold rounded-md px-5 py-3">
-              Total Storage Occupied by Inactive Users [TB]: {parseFloat(totalStorageInactive).toFixed(2) }
+              Total Storage Occupied by Inactive Users [TB]: {parseFloat(getTotalStorage(inactiveUserData)).toFixed(2) }
             </div>
             <div className=" w-full bg-[#006AFF] shadow-2xl border mt-5 text-white font-semibold rounded-md px-5 py-3">
               Storage Occupied by Active Users
