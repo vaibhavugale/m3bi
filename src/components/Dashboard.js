@@ -13,7 +13,7 @@ const Dashboard = () => {
   const [totalStorageInactive, setTotalStorageInactive] = useState(0);
   useEffect(() => {
     const getData = async () => {
-      const res = await fetch("http://localhost:5000/userData");
+      const res = await fetch("https://m3bi-backend.onrender.com/userData");
       const data = await res.json();
 
       // console.log( data?.data);
