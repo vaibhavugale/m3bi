@@ -8,21 +8,29 @@ import { volumeData } from "../data";
 import { SearchSelect, SearchSelectItem } from "@tremor/react";
 
 const Dashboard = () => {
-  const [userData, setUserData] = useState([]);
+  const [activeUserData,setActiveUserData] = useState([]);
+  const [inactiveUserData,setInactiveUserData] = useState([]);
   const [totalStorageInactive, setTotalStorageInactive] = useState(0);
   useEffect(() => {
     const getData = async () => {
-      const res = await fetch("https://m3bi-backend.onrender.com/userData");
+      const res = await fetch("http://localhost:5000/userData");
       const data = await res.json();
-      setUserData(data?.data);
-      const result = userData.reduce(
+
+      console.log( data?.data);
+       await data?.data.map((item)=>{
+        if(item?._id=="ACTIVE") setActiveUserData(item?.users);
+        if(item?._id=="INACTIVE") setInactiveUserData(item?.users);
+      })
+
+      console.log(inactiveUserData);
+      const result = inactiveUserData.reduce(
         (acc, item) => acc + parseInt(item?.storage),
         0
       );
       setTotalStorageInactive(result);
     };
     getData();
-  }, [userData]);
+  }, []);
   const [optionData, setOptionData] = useState({
     location: "USA",
     environment: "Sliver",
@@ -171,7 +179,7 @@ const Dashboard = () => {
             <p className=" mt-2 font-semibold">
               Storage Occupied by Inactive Users
             </p>
-            <InactiveDatable TABLE_ROWS={userData} />
+            <InactiveDatable TABLE_ROWS={inactiveUserData} />
 
             <div className=" w-full bg-[#FF9000] shadow-2xl border mt-5 text-white font-semibold rounded-md px-5 py-3">
               Total Storage Occupied by Inactive Users [TB]: {parseFloat(totalStorageInactive).toFixed(2) }
@@ -180,7 +188,7 @@ const Dashboard = () => {
               Storage Occupied by Active Users
             </div>
 
-            <ActiveDatable row={userData} />
+            <ActiveDatable row={activeUserData} />
           </>
         )}
       </div>
