@@ -5,25 +5,24 @@ import ActiveDatable from "./ActiveDatable";
 import { AiFillEnvironment } from "react-icons/ai";
 import { useEffect } from "react";
 import { volumeData } from "../data";
-import {
-  MultiSelect,
-  MultiSelectItem,
-  SearchSelect,
-  SearchSelectItem,
-  Select,
-  SelectItem,
-} from "@tremor/react";
+import { SearchSelect, SearchSelectItem } from "@tremor/react";
 
 const Dashboard = () => {
   const [userData, setUserData] = useState([]);
+  const [totalStorageInactive, setTotalStorageInactive] = useState(0);
   useEffect(() => {
     const getData = async () => {
       const res = await fetch("https://m3bi-backend.onrender.com/userData");
       const data = await res.json();
       setUserData(data?.data);
+      const result = userData.reduce(
+        (acc, item) => acc + parseInt(item?.storage),
+        0
+      );
+      setTotalStorageInactive(result);
     };
     getData();
-  }, []);
+  }, [userData]);
   const [optionData, setOptionData] = useState({
     location: "USA",
     environment: "Sliver",
@@ -33,7 +32,7 @@ const Dashboard = () => {
   });
 
   const handleChange = (name, value) => {
-    if(!value) return;
+    if (!value) return;
     setOptionData((prevSelectedValues) => ({
       ...prevSelectedValues,
       [name]: value,
@@ -55,9 +54,10 @@ const Dashboard = () => {
               onValueChange={(e) => handleChange("location", e)}
               className="  outline-none rounded-md py-1 w-[70%] "
             >
-              <SearchSelectItem value="US" selected>US</SearchSelectItem>
+              <SearchSelectItem value="US" selected>
+                US
+              </SearchSelectItem>
               <SearchSelectItem value="IN">IN</SearchSelectItem>
-  
             </SearchSelect>
           </div>
 
@@ -73,7 +73,7 @@ const Dashboard = () => {
               <SearchSelectItem value="Palladium">Palladium</SearchSelectItem>
             </SearchSelect>
           </div>
-            
+
           <div className="flex-grow ">
             <p className=" font-semibold">MapR Cluster Type::</p>
             <SearchSelect
@@ -93,13 +93,14 @@ const Dashboard = () => {
             >
               <SearchSelectItem value="SilverM5">Silver M5</SearchSelectItem>
               <SearchSelectItem value="GoldM5">Gold M5</SearchSelectItem>
-              <SearchSelectItem value="PlatinumM5">Platinum M5</SearchSelectItem>
-              <SearchSelectItem value="PalladiumM5">Palladium M5</SearchSelectItem>
-       
+              <SearchSelectItem value="PlatinumM5">
+                Platinum M5
+              </SearchSelectItem>
+              <SearchSelectItem value="PalladiumM5">
+                Palladium M5
+              </SearchSelectItem>
             </SearchSelect>
           </div>
-      
-
         </div>
 
         <div className="  p-8">
@@ -114,48 +115,40 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* <select
-          onChange={handleChange}
-          name="volume"
-          className=" border w-full px-3 py-1 rounded-md"
+        <SearchSelect
+          onValueChange={(e) => handleChange("volume", e)}
+          className="  w-full px-3 py-1 rounded-md"
         >
-          <option disabled selected>
-            select volume
-          </option>
-          <option value={"volume1"}>Volume1</option>
-          <option value={"volume2"}>Volume2</option>
-        </select> */}
-
-        
-            <SearchSelect
-              onValueChange={(e) => handleChange("volume", e)}
-              className="  w-full px-3 py-1 rounded-md"
-
-            >
-              <SearchSelectItem  disabled selected>Select</SearchSelectItem>
-              <SearchSelectItem value="volume1" >Volume1</SearchSelectItem>
-              <SearchSelectItem value="volume2">volume2</SearchSelectItem>
-  
-            </SearchSelect>
+          <SearchSelectItem disabled selected>
+            Select
+          </SearchSelectItem>
+          <SearchSelectItem value="volume1">Volume1</SearchSelectItem>
+          <SearchSelectItem value="volume2">volume2</SearchSelectItem>
+        </SearchSelect>
 
         {optionData?.volume != "" && (
           <>
             <table className=" border  bg-dark-blue w-full mt-3 rounded-md overflow-hidden text-white p-2">
               <thead>
                 <tr>
-                  {TABLE_HEAD.map((item) => {
-                    return <td className=" px-3">{item?.columName}</td>;
+                  {TABLE_HEAD.map((item, index) => {
+                    return (
+                      <td key={index} className=" px-3">
+                        {item?.columName}
+                      </td>
+                    );
                   })}
                 </tr>
               </thead>
 
               <tbody>
                 {optionData?.volume &&
-                  volumeData[optionData.volume].map((item) => {
+                  volumeData[optionData.volume].map((item, index) => {
                     return (
                       <tr
-                        className={` w-full text-black bg-white  ${
-                          item?.Percentage >= 50
+                        key={index}
+                        className={` w-full text-black ${
+                          parseFloat((item?.Used/item?.Quota)*100).toFixed(2) >= 50
                             ? "bg-[#F24A3F]"
                             : "bg-[#54B358]"
                         } `}
@@ -164,7 +157,7 @@ const Dashboard = () => {
                         <td className="p-3">{item?.Path}</td>
                         <td className="p-3">{item?.Quota}</td>
                         <td className="p-3">{item?.Used}</td>
-                        <td className="p-3">{item?.Percentage}</td>
+                        <td className="p-3">{parseFloat((item?.Used/item?.Quota)*100).toFixed(2) }</td>
                       </tr>
                     );
                   })}
@@ -181,7 +174,7 @@ const Dashboard = () => {
             <InactiveDatable TABLE_ROWS={userData} />
 
             <div className=" w-full bg-[#FF9000] shadow-2xl border mt-5 text-white font-semibold rounded-md px-5 py-3">
-              Total Storage Occupied by Inactive Users [TB]: 15.0{" "}
+              Total Storage Occupied by Inactive Users [TB]: {parseFloat(totalStorageInactive).toFixed(2) }
             </div>
             <div className=" w-full bg-[#006AFF] shadow-2xl border mt-5 text-white font-semibold rounded-md px-5 py-3">
               Storage Occupied by Active Users
